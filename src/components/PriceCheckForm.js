@@ -9,11 +9,13 @@ class PriceCheckForm extends Component {
         this.state = {
             postcode: "",
             selectedCategory: "",
+            searchString: ""
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handlePostcodeChange = this.handlePostcodeChange.bind(this);
         this.handleCategoryChange = this.handleCategoryChange.bind(this);
+        this.handleSearchStringChange = this.handleSearchStringChange.bind(this);
         this.fetchSuppliers = this.fetchSuppliers.bind(this)
     }
 
@@ -37,6 +39,9 @@ class PriceCheckForm extends Component {
         console.log(`${this.state.selectedCategory}`)
     }
 
+    handleSearchStringChange(e) {
+        this.setState({searchString: e.target.value}) 
+    }
 
 
     render() {
@@ -58,7 +63,7 @@ class PriceCheckForm extends Component {
                     </div>
                     <div className="productSearch">
                         Search prices on {this.state.selectedCategory} products.
-                        <input type="text" name="searchString" placeholder="Search a product"/>
+                        <input type="text" name="searchString" placeholder="Search a product" onChange={this.handleSearchStringChange}/>
                     </div>
                 </form>
             </div>
