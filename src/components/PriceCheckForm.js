@@ -9,7 +9,6 @@ class PriceCheckForm extends Component {
         this.state = {
             postcode: "",
             selectedCategory: "",
-
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,12 +29,11 @@ class PriceCheckForm extends Component {
 
 
     handlePostcodeChange(e) {
-        this.setState({postcode: e.target.value})
-        
+        this.setState({postcode: e.target.value})   
     }
 
     handleCategoryChange(e) {
-        this.setState({selectedCategory: e.target.value})
+        this.setState({selectedCategory: categories[e.target.id-1].value})
         console.log(`${this.state.selectedCategory}`)
     }
 
@@ -55,12 +53,12 @@ class PriceCheckForm extends Component {
                     <input type="text" value={this.state.postcode} onChange={this.handlePostcodeChange}/>
                     <input type="submit" value="Check your Postcode"/>
                     <div className="categorySelection">
-                        {/* need to find a way to handle the change in radio buttons and set the state */}
                         Select a product category to compare prices.
                         {categoryRadioSelectors}
                     </div>
                     <div className="productSearch">
-                        What are you looking for
+                        Search prices on {this.state.selectedCategory} products.
+                        <input type="text" name="searchString" placeholder="Search a product"/>
                     </div>
                 </form>
             </div>
