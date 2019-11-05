@@ -9,38 +9,47 @@ class PriceCheckForm extends Component {
         this.state = {
             postcode: "",
             selectedCategory: "",
-            searchString: ""
+            searchString: "",
+            supplierIds: []
         }
 
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handlePostcodeChange = this.handlePostcodeChange.bind(this);
-        this.handleCategoryChange = this.handleCategoryChange.bind(this);
-        this.handleSearchStringChange = this.handleSearchStringChange.bind(this);
-        this.fetchSuppliers = this.fetchSuppliers.bind(this)
     }
 
-    fetchSuppliers = (postcode) => {
-        return axios.get(`https://www.foodbomb.com.au/supplier-service/postcode/${postcode}/suppliers`)
-          .then(resp => resp.data)
+    getListOfSupplierIds = async (postcode) => {
+        const response = await axios.get(`https://www.foodbomb.com.au/supplier-service/postcode/${postcode}/suppliers`);
+        return response.data;
     }
 
-    handleSubmit(e) {
-        const supplierResponse = this.fetchSuppliers(this.state.postcode)
-        e.preventDefault()
+    getProductsFromCategoryForSearchQuery = async (supplierIds, category, searchString) => {
+        const payload = {
+            category: category,
+            "function": "findProductsBySupplierIds",
+            searchString: searchString,
+            supplierIds: supplierIds
+        }
+        const response = await axios.post(`https://www.foodbomb.com.au/shop/findProductsBySupplierIds.php`, payload);
+        return response.data
+    }
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        const { postcode, selectedCategory, searchString } = this.state;
+        const supplierIds = this.getListOfSupplierIds(postcode);
+ 
+        const products = this.getProductsFromCategoryForSearchQuery(supplierIds, selectedCategory, searchString);
     }
 
 
-    handlePostcodeChange(e) {
-        this.setState({postcode: e.target.value})   
+    handlePostcodeChange = (e) => {
+        this.setState({postcode: e.target.value});   
     }
 
-    handleCategoryChange(e) {
+    handleCategoryChange = (e) => {
         this.setState({selectedCategory: categories[e.target.id-1].value})
-        console.log(`${this.state.selectedCategory}`)
     }
 
-    handleSearchStringChange(e) {
-        this.setState({searchString: e.target.value}) 
+    handleSearchStringChange = (e) => {
+        this.setState({searchString: e.target.value});
     }
 
 
