@@ -10,13 +10,13 @@ class PriceCheckForm extends Component {
             postcode: "",
             selectedCategory: "",
             searchString: "",
-            supplierIds: []
+            supplierIds: [],    
         }
 
     }
 
     getListOfSupplierIds = async (postcode) => {
-        const response = await axios.get(`https://www.foodbomb.com.au/supplier-service/postcode/${postcode}/suppliers`);
+        const response = await axios.get(`https://www.foodbomb.com.au/supplier-service/postcode/${postcode}/suppliers`)
         return response.data;
     }
 
@@ -31,12 +31,20 @@ class PriceCheckForm extends Component {
         return response.data
     }
 
-    handleSubmit = (e) => {
+    handleSubmit = async (e) => {
+        debugger;
+        alert("hello")
         e.preventDefault();
         const { postcode, selectedCategory, searchString } = this.state;
-        const supplierIds = this.getListOfSupplierIds(postcode);
- 
-        const products = this.getProductsFromCategoryForSearchQuery(supplierIds, selectedCategory, searchString);
+
+        axios.get(`https://www.foodbomb.com.au/supplier-service/postcode/${postcode}/suppliers`)
+            .then(resp => {debugger})
+            .catch(err => {debugger})
+
+
+        // const supplierIds = await this.getListOfSupplierIds(postcode);
+        // console.log(supplierIds)
+        // const products = this.getProductsFromCategoryForSearchQuery(supplierIds, selectedCategory, searchString);
     }
 
 
@@ -44,8 +52,8 @@ class PriceCheckForm extends Component {
         this.setState({postcode: e.target.value});   
     }
 
-    handleCategoryChange = (e) => {
-        this.setState({selectedCategory: categories[e.target.id-1].value})
+    handleCategoryChange = cat => {
+        this.setState({selectedCategory: cat})
     }
 
     handleSearchStringChange = (e) => {
@@ -54,26 +62,28 @@ class PriceCheckForm extends Component {
 
 
     render() {
-        const categoryRadioSelectors = categories.map( category => 
-            <div key={category.catId} onChange={this.handleCategoryChange}>
-                <input type="radio" id={category.catId} name="category" value={category.value}/>
-                <label for={category.catId}>{category.displayName}</label>
-            </div>
-        ) 
+        const { selectedCategory } = this.state;
         return (
             <div className="PriceCheckForm">
                 <form onSubmit={this.handleSubmit}>
                     Enter your Postcode:
                     <input type="text" value={this.state.postcode} onChange={this.handlePostcodeChange}/>
-                    <input type="submit" value="Check your Postcode"/>
-                    <div className="categorySelection">
+                    
+                    <div className="categorySelectionContainer">
                         Select a product category to compare prices.
-                        {categoryRadioSelectors}
+                        <div className="categorySelectionButtonContainer">
+                            {categories.map( category => 
+                                <div className={selectedCategory === category.value ? "categoryButton selected" : "categoryButton"} key={category.catId} onClick={() => this.handleCategoryChange(category.value)}>
+                                {category.displayName}
+                                </div>
+                            )}
+                        </div> 
                     </div>
                     <div className="productSearch">
                         Search prices on {this.state.selectedCategory} products.
                         <input type="text" name="searchString" placeholder="Search a product" onChange={this.handleSearchStringChange}/>
                     </div>
+                    <input type="submit" value="Check your Postcode"/>
                 </form>
             </div>
         )
