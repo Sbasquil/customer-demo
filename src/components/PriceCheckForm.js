@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import { categories } from '../utils/Constants.js';
-import LoadingResponses from './LoadingResponses.js';
-
 
 
 class PriceCheckForm extends Component {
@@ -88,8 +86,6 @@ class PriceCheckForm extends Component {
                     </div>
                     <input type="submit" value="Check your Postcode"/>
                 </form>
-
-                <LoadingResponses />
             </div>
         )
     }
