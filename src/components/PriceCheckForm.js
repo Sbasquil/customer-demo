@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import { categories } from '../utils/Constants.js';
+import PriceCheckQueryResponses from './PriceCheckQueryResponses'
 
 
 class PriceCheckForm extends Component {
@@ -9,7 +10,8 @@ class PriceCheckForm extends Component {
         this.state = {
             postcode: "",
             selectedCategory: "",
-            searchString: "",   
+            searchString: "", 
+            fetching: false,  
         }
 
     }
@@ -32,6 +34,7 @@ class PriceCheckForm extends Component {
 
     handleSubmit = async (e) => {
         e.preventDefault();
+        this.setState({fetching: true})
         const { postcode, selectedCategory, searchString } = this.state;
 
         // Placeholder for routing the requests to the custom API
@@ -86,6 +89,7 @@ class PriceCheckForm extends Component {
                     </div>
                     <input type="submit" value="Check your Postcode"/>
                 </form>
+                <PriceCheckQueryResponses fetching={this.state.fetching}/>
             </div>
         )
     }

@@ -55,4 +55,17 @@
 
   
 }
+.loadingResponses {
+  height: 40vh;
+  background-color: pink;
+  margin: 25px;
+  display: flex; 
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.loadingText {
+  margin-top: 40px;
+}
+
 

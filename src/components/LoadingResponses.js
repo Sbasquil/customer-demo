@@ -1,10 +1,14 @@
 import React from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-const LoadingResponses = (fetching) => {
+const LoadingResponses = () => {
     return (
         <div className="loadingResponses"> 
-            <CircularProgress />
+            <CircularProgress /> 
+            <div className="loadingText">
+                We are looking for those items.....
+            </div>
+            
         </div>
     )
 }
