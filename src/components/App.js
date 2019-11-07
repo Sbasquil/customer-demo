@@ -11,7 +11,6 @@ class App extends Component {
 
 
   render() {
-    const { searchInitiated , fetching } = this.state
     return (
       <div className="App">
         <h1>Search products from suppliers in your area.</h1>

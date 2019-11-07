@@ -55,10 +55,14 @@
 
   
 }
-.loadingResponses {
+.ResponseContainer {
   height: 40vh;
   background-color: pink;
   margin: 25px;
+
+}
+.loadingResponses {
+  
   display: flex; 
   flex-direction: column;
   justify-content: center;
@@ -66,6 +70,15 @@
 }
 .loadingText {
   margin-top: 40px;
+}
+.ResponseDisplay {
+  display: flex; 
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+.ResponseDisplay__Header {
+  
 }
 
 

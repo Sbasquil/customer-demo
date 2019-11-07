@@ -11,7 +11,8 @@ class PriceCheckForm extends Component {
             postcode: "",
             selectedCategory: "",
             searchString: "", 
-            fetching: false,  
+            fetching: false,
+            searchComplete: false  
         }
 
     }
@@ -64,9 +65,16 @@ class PriceCheckForm extends Component {
         this.setState({searchString: e.target.value});
     }
 
+    handleDummyButtonClick = () => {
+        this.setState({
+            searchComplete: true,
+            fetching: false
+        })
+    }
+
 
     render() {
-        const { selectedCategory } = this.state;
+        const { selectedCategory, fetching, searchComplete } = this.state;
         return (
             <div className="PriceCheckForm">
                 <form onSubmit={this.handleSubmit}>
@@ -84,12 +92,13 @@ class PriceCheckForm extends Component {
                         </div> 
                     </div>
                     <div className="productSearch">
-                        Search prices on {this.state.selectedCategory} products.
+                        Search prices on {selectedCategory} products.
                         <input type="text" name="searchString" placeholder="Search a product" onChange={this.handleSearchStringChange}/>
                     </div>
                     <input type="submit" value="Check your Postcode"/>
                 </form>
-                <PriceCheckQueryResponses fetching={this.state.fetching}/>
+                <button onClick={this.handleDummyButtonClick}>See the dummy response form</button>
+                <PriceCheckQueryResponses fetching={fetching} searchComplete={searchComplete}/>
             </div>
         )
     }
