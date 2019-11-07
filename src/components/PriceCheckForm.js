@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import { categories } from '../utils/Constants.js';
+import LoadingResponses from './LoadingResponses.js';
+
 
 
 class PriceCheckForm extends Component {
@@ -9,8 +11,7 @@ class PriceCheckForm extends Component {
         this.state = {
             postcode: "",
             selectedCategory: "",
-            searchString: "",
-            supplierIds: [],    
+            searchString: "",   
         }
 
     }
@@ -27,21 +28,23 @@ class PriceCheckForm extends Component {
             searchString: searchString,
             supplierIds: supplierIds
         }
-        const response = await axios.post(`https://www.foodbomb.com.au/shop/findProductsBySupplierIds.php`, payload);
+        const response = await axios.post(`/shop/findProductsBySupplierIds.php`, payload);
         return response.data
     }
 
     handleSubmit = async (e) => {
-        debugger;
-        alert("hello")
         e.preventDefault();
         const { postcode, selectedCategory, searchString } = this.state;
 
-        axios.get(`https://www.foodbomb.com.au/supplier-service/postcode/${postcode}/suppliers`)
-            .then(resp => {debugger})
+        // Placeholder for routing the requests to the custom API
+        // axios.get(`http://localhost:3001/search/${postcode}/${selectedCategory}/${searchString}`)
+        //     .then(resp => {debugger})
+        //     .catch(err => {debugger})
+
+        axios.get(`/supplier-service/postcode/${postcode}/suppliers`)
+            .then(supplierIds => 
+                this.getProductsFromCategoryForSearchQuery(supplierIds, selectedCategory, searchString))
             .catch(err => {debugger})
-
-
         // const supplierIds = await this.getListOfSupplierIds(postcode);
         // console.log(supplierIds)
         // const products = this.getProductsFromCategoryForSearchQuery(supplierIds, selectedCategory, searchString);
@@ -85,6 +88,8 @@ class PriceCheckForm extends Component {
                     </div>
                     <input type="submit" value="Check your Postcode"/>
                 </form>
+
+                <LoadingResponses />
             </div>
         )
     }
