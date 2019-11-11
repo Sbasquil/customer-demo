@@ -59,6 +59,9 @@
   height: 40vh;
   background-color: pink;
   margin: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
 
 }
 .loadingResponses {
@@ -78,7 +81,7 @@
   align-items: center;
 }
 .ResponseDisplay__Header {
-  
+  font-size: 28px
 }
 
 

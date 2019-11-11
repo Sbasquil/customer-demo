@@ -16,19 +16,20 @@ const useStyles = makeStyles({
       minWidth: 650,
     },
   });
-
+  
 function createData(product, portion, price) {
-  return { product, portion, price };
+    return { product, portion, price };
 }
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0)
-];
-
-export default function SimpleTable() {
+export default function ResponseTable({searchResults}) {
   const classes = useStyles();
+
+  const rows = searchResults.map(product => 
+    createData(product.pname, product.sizeUnit, product.price)
+  );
+
+  console.log(searchResults)
+  debugger
 
   return (
     <Paper className={classes.root}>
@@ -41,14 +42,14 @@ export default function SimpleTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
-            <TableRow key={row.name}>
+          {searchResults.map(product => (
+            <TableRow key={product.productId}>
               <TableCell component="th" scope="row">
-                {row.product}
+                {product.name}
               </TableCell>
-              <TableCell align="right">{row.portion}</TableCell>
-              <TableCell align="right">{row.price}</TableCell>
-            </TableRow>
+              <TableCell align="right">{product.portion}</TableCell>
+              <TableCell align="right">{product.price}</TableCell>
+            </TableRow>            
           ))}
         </TableBody>
       </Table>

@@ -8,13 +8,15 @@ class PriceCheckForm extends Component {
     constructor(props){
         super(props)
         this.state = {
-            postcode: "",
+            postcode: "2000",
             selectedCategory: "",
             searchString: "", 
             fetching: false,
-            searchComplete: false  
+            searchComplete: false,
+            numOfSuppliers: 0,
+            searchResults: [],
+            count: 0  
         }
-
     }
 
     getListOfSupplierIds = async (postcode) => {
@@ -29,27 +31,40 @@ class PriceCheckForm extends Component {
             searchString: searchString,
             supplierIds: supplierIds
         }
-        const response = await axios.post(`/shop/findProductsBySupplierIds.php`, payload);
-        return response.data
+        let products = [];
+        try {
+            const response = await axios.post(`/shop/findProductsBySupplierIds.php`, payload);
+            products = response.data;
+        } catch (e) {
+            console.err(e)
+            debugger
+            // update state with error message
+        }
+        this.handleRecievedResponse()
+        return products;
     }
 
-    handleSubmit = async (e) => {
+    handleSubmit = e => {
         e.preventDefault();
-        this.setState({fetching: true})
         const { postcode, selectedCategory, searchString } = this.state;
-
-        // Placeholder for routing the requests to the custom API
-        // axios.get(`http://localhost:3001/search/${postcode}/${selectedCategory}/${searchString}`)
-        //     .then(resp => {debugger})
-        //     .catch(err => {debugger})
-
+        this.setState({fetching: true})
+        
         axios.get(`/supplier-service/postcode/${postcode}/suppliers`)
-            .then(supplierIds => 
-                this.getProductsFromCategoryForSearchQuery(supplierIds, selectedCategory, searchString))
-            .catch(err => {debugger})
-        // const supplierIds = await this.getListOfSupplierIds(postcode);
-        // console.log(supplierIds)
-        // const products = this.getProductsFromCategoryForSearchQuery(supplierIds, selectedCategory, searchString);
+            .then(response => {
+                this.setState({numOfSuppliers: response.data.length})
+                this.getProductsFromCategoryForSearchQuery(response.data, selectedCategory, searchString).then(response => {
+                    console.log(response)
+                    const results = response.result;
+                    const searchResults = results.map(product => ({ name: product.pname, portion: `${product.size}${product.sizeUnit}`, productId: product.product_id, price: `$${product.price}`}))
+                    this.setState({searchResults, count: response.count})
+                }).catch(err => {
+                    debugger
+                    console.err(err)
+                })
+            }).catch(err => {debugger})
+            .finally(() => {
+                this.handleRecievedResponse()
+            })
     }
 
 
@@ -65,7 +80,7 @@ class PriceCheckForm extends Component {
         this.setState({searchString: e.target.value});
     }
 
-    handleDummyButtonClick = () => {
+    handleRecievedResponse = () => {
         this.setState({
             searchComplete: true,
             fetching: false
@@ -74,12 +89,12 @@ class PriceCheckForm extends Component {
 
 
     render() {
-        const { selectedCategory, fetching, searchComplete } = this.state;
+        const { selectedCategory, fetching, searchComplete, numOfSuppliers, searchResults, count } = this.state;
         return (
             <div className="PriceCheckForm">
                 <form onSubmit={this.handleSubmit}>
                     Enter your Postcode:
-                    <input type="text" value={this.state.postcode} onChange={this.handlePostcodeChange}/>
+                    <input type="number" value={this.state.postcode} min="200" max="9730" onChange={this.handlePostcodeChange}/>
                     
                     <div className="categorySelectionContainer">
                         Select a product category to compare prices.
@@ -95,10 +110,14 @@ class PriceCheckForm extends Component {
                         Search prices on {selectedCategory} products.
                         <input type="text" name="searchString" placeholder="Search a product" onChange={this.handleSearchStringChange}/>
                     </div>
-                    <input type="submit" value="Check your Postcode"/>
+                    <input type="submit" value="Check for products!"/>
                 </form>
-                <button onClick={this.handleDummyButtonClick}>See the dummy response form</button>
-                <PriceCheckQueryResponses fetching={fetching} searchComplete={searchComplete}/>
+                <PriceCheckQueryResponses 
+                    fetching={fetching}
+                    searchComplete={searchComplete}
+                    numOfSuppliers={numOfSuppliers}
+                    searchResults={searchResults}
+                    count={count} />
             </div>
         )
     }
