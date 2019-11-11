@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
+import React from 'react'
 import LoadingResponses from './LoadingResponses'
 import ResponseDisplay from './ResponseDisplay'
+import propTypes from 'prop-types'
 
 const PriceCheckQueryResponses = ({ fetching, numOfSuppliers, searchResults, count, searchComplete}) => {
     if (fetching) {
@@ -22,6 +23,14 @@ const PriceCheckQueryResponses = ({ fetching, numOfSuppliers, searchResults, cou
             </div>
         )
     }
+}
+
+PriceCheckQueryResponses.propTypes = {
+    fetching: propTypes.bool.isRequired,    
+    numOfSuppliers: propTypes.number.isRequired,
+    searchResults: propTypes.array.isRequired,
+    count: propTypes.number.isRequired, 
+    searchComplete: propTypes.bool.isRequired, 
 }
 
 export default PriceCheckQueryResponses

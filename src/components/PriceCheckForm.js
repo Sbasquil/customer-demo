@@ -36,9 +36,8 @@ class PriceCheckForm extends Component {
             const response = await axios.post(`/shop/findProductsBySupplierIds.php`, payload);
             products = response.data;
         } catch (e) {
-            console.err(e)
+            console.error(e)
             debugger
-            // update state with error message
         }
         this.handleRecievedResponse()
         return products;
@@ -53,13 +52,12 @@ class PriceCheckForm extends Component {
             .then(response => {
                 this.setState({numOfSuppliers: response.data.length})
                 this.getProductsFromCategoryForSearchQuery(response.data, selectedCategory, searchString).then(response => {
-                    console.log(response)
                     const results = response.result;
                     const searchResults = results.map(product => ({ name: product.pname, portion: `${product.size}${product.sizeUnit}`, productId: product.product_id, price: `$${product.price}`}))
                     this.setState({searchResults, count: response.count})
                 }).catch(err => {
                     debugger
-                    console.err(err)
+                    console.error(err)
                 })
             }).catch(err => {debugger})
             .finally(() => {

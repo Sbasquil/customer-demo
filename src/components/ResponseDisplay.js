@@ -1,5 +1,6 @@
 import React from 'react'
 import ResponseTable from './ResponseTable'
+import propTypes from 'prop-types'
 
 const ResponseDisplay = ({numOfSuppliers, resultsCount, searchResults}) => {
     return (
@@ -17,4 +18,9 @@ const ResponseDisplay = ({numOfSuppliers, resultsCount, searchResults}) => {
     )
 }
 
+ResponseDisplay.propTypes = {
+    numOfSuppliers: propTypes.number.isRequired,
+    resultsCount: propTypes.number.isRequired,
+    searchResults: propTypes.array.isRequired
+}
 export default ResponseDisplay

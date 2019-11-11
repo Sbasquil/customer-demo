@@ -6,6 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import propTypes from 'prop-types';
 
 const useStyles = makeStyles({
     root: {
@@ -16,20 +17,9 @@ const useStyles = makeStyles({
       minWidth: 650,
     },
   });
-  
-function createData(product, portion, price) {
-    return { product, portion, price };
-}
 
 export default function ResponseTable({searchResults}) {
   const classes = useStyles();
-
-  const rows = searchResults.map(product => 
-    createData(product.pname, product.sizeUnit, product.price)
-  );
-
-  console.log(searchResults)
-  debugger
 
   return (
     <Paper className={classes.root}>
@@ -55,4 +45,8 @@ export default function ResponseTable({searchResults}) {
       </Table>
     </Paper>
   );
+}
+
+ResponseTable.propTypes = {
+  searchResults: propTypes.array
 }
