@@ -88,7 +88,7 @@ class PriceCheckForm extends Component {
             <div className="PriceCheckForm">
                 <form onSubmit={this.handleSubmit}>
                     Enter your Postcode:
-                    <input type="number" value={this.state.postcode} min="200" max="9730" onChange={this.handlePostcodeChange} />
+                    <input type="number" value={this.state.postcode} min="200" max="9730" pattern="^[0-9]*$" onChange={this.handlePostcodeChange} />
 
                     <div className="categorySelectionContainer">
                         Select a product category to compare prices.

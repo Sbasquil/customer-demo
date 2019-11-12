@@ -30,7 +30,6 @@
 }
 
 .categoryButton {
-  
   background-color: green;
   margin: 5px;
   height: 50px;
@@ -42,6 +41,7 @@
   &:hover {
     background-color: darken(green, 10%);
     cursor: pointer;
+    color: white;
   }
   &.selected {
     background: orange;
@@ -52,8 +52,6 @@
   @media (min-width: 1440px) {
     width: 20vw;
   }
-
-  
 }
 .ResponseContainer {
   height: 40vh;
@@ -84,4 +82,10 @@
   font-size: 28px
 }
 
-
+.RequestError {
+  background-color: red;
+  color: White;
+  margin: 20px;
+  padding: 5px;
+  text-align: left;
+}
