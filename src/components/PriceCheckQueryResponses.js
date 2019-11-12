@@ -3,6 +3,7 @@ import LoadingResponses from './LoadingResponses'
 import ResponseDisplay from './ResponseDisplay'
 import propTypes from 'prop-types'
 
+
 const PriceCheckQueryResponses = ({fetching, numOfSuppliers, searchResults, count, searchComplete, requestError}) => {
     if (fetching) {
         return (

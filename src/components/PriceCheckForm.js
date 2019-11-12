@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios';
 import { categories } from '../utils/Constants.js';
 import PriceCheckQueryResponses from './PriceCheckQueryResponses'
+import MapContainer from './MapContainer'
 
 
 class PriceCheckForm extends Component {
@@ -9,6 +10,7 @@ class PriceCheckForm extends Component {
         super(props)
         this.state = {
             postcode: "2000",
+            postcodeSubmitted: "",
             selectedCategory: "",
             searchString: "",
             fetching: false,
@@ -54,7 +56,7 @@ class PriceCheckForm extends Component {
                 this.getProductsFromCategoryForSearchQuery(response.data, selectedCategory, searchString).then(response => {
                     const results = response.result;
                     const searchResults = results.map(product => ({ name: product.pname, portion: `${product.size}${product.sizeUnit}`, productId: product.product_id, price: `$${product.price}` }))
-                    this.setState({ searchResults, count: response.count }, () => this.setState({fetching: false, searchComplete: true}));
+                    this.setState({ searchResults, count: response.count }, () => this.setState({fetching: false, searchComplete: true, postcodeSubmitted: postcode}));
                 }).catch(err => {
                     debugger
                     this.setState({fetching: false, searchComplete: false, requestError: JSON.stringify(err)})
@@ -83,12 +85,12 @@ class PriceCheckForm extends Component {
 
 
     render() {
-        const { selectedCategory, fetching, searchComplete, numOfSuppliers, searchResults, count, requestError } = this.state;
+        const { postcode, postcodeSubmitted, selectedCategory, fetching, searchComplete, numOfSuppliers, searchResults, count, requestError } = this.state;
         return (
             <div className="PriceCheckForm">
                 <form onSubmit={this.handleSubmit}>
                     Enter your Postcode:
-                    <input type="number" value={this.state.postcode} min="200" max="9730" pattern="^[0-9]*$" onChange={this.handlePostcodeChange} />
+                    <input type="number" value={postcode} min="200" max="9730" pattern="^[0-9]*$" onChange={this.handlePostcodeChange} />
 
                     <div className="categorySelectionContainer">
                         Select a product category to compare prices.
@@ -113,6 +115,7 @@ class PriceCheckForm extends Component {
                     searchResults={searchResults}
                     count={count}
                     requestError={requestError} />
+                <MapContainer postcode={postcodeSubmitted}/>
             </div>
         )
     }
