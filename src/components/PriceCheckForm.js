@@ -5,17 +5,18 @@ import PriceCheckQueryResponses from './PriceCheckQueryResponses'
 
 
 class PriceCheckForm extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
             postcode: "2000",
             selectedCategory: "",
-            searchString: "", 
+            searchString: "",
             fetching: false,
             searchComplete: false,
             numOfSuppliers: 0,
             searchResults: [],
-            count: 0  
+            count: 0,
+            requestError: ""
         }
     }
 
@@ -39,83 +40,79 @@ class PriceCheckForm extends Component {
             console.error(e)
             debugger
         }
-        this.handleRecievedResponse()
         return products;
     }
 
     handleSubmit = e => {
         e.preventDefault();
         const { postcode, selectedCategory, searchString } = this.state;
-        this.setState({fetching: true})
-        
+        this.setState({ fetching: true, searchComplete: false }, () => console.log(this.state));
+
         axios.get(`/supplier-service/postcode/${postcode}/suppliers`)
             .then(response => {
-                this.setState({numOfSuppliers: response.data.length})
+                this.setState({ numOfSuppliers: response.data.length })
                 this.getProductsFromCategoryForSearchQuery(response.data, selectedCategory, searchString).then(response => {
                     const results = response.result;
-                    const searchResults = results.map(product => ({ name: product.pname, portion: `${product.size}${product.sizeUnit}`, productId: product.product_id, price: `$${product.price}`}))
-                    this.setState({searchResults, count: response.count})
+                    const searchResults = results.map(product => ({ name: product.pname, portion: `${product.size}${product.sizeUnit}`, productId: product.product_id, price: `$${product.price}` }))
+                    this.setState({ searchResults, count: response.count }, () => this.setState({fetching: false, searchComplete: true}));
                 }).catch(err => {
                     debugger
+                    this.setState({fetching: false, searchComplete: false, requestError: JSON.stringify(err)})
                     console.error(err)
                 })
-            }).catch(err => {debugger})
-            .finally(() => {
-                this.handleRecievedResponse()
+            }).catch(err => { 
+                debugger
+                console.error(err) 
+                this.setState({fetching: false, searchComplete: false, requestError: JSON.stringify(err)})
             })
-    }
+    };
 
 
     handlePostcodeChange = (e) => {
-        this.setState({postcode: e.target.value});   
+        this.setState({ postcode: e.target.value });
     }
 
     handleCategoryChange = cat => {
-        this.setState({selectedCategory: cat})
+        this.setState({ selectedCategory: cat })
     }
 
     handleSearchStringChange = (e) => {
-        this.setState({searchString: e.target.value});
+        this.setState({ searchString: e.target.value });
     }
 
-    handleRecievedResponse = () => {
-        this.setState({
-            searchComplete: true,
-            fetching: false
-        })
-    }
 
 
     render() {
-        const { selectedCategory, fetching, searchComplete, numOfSuppliers, searchResults, count } = this.state;
+        const { selectedCategory, fetching, searchComplete, numOfSuppliers, searchResults, count, requestError } = this.state;
         return (
             <div className="PriceCheckForm">
                 <form onSubmit={this.handleSubmit}>
                     Enter your Postcode:
-                    <input type="number" value={this.state.postcode} min="200" max="9730" onChange={this.handlePostcodeChange}/>
-                    
+                    <input type="number" value={this.state.postcode} min="200" max="9730" onChange={this.handlePostcodeChange} />
+
                     <div className="categorySelectionContainer">
                         Select a product category to compare prices.
                         <div className="categorySelectionButtonContainer">
-                            {categories.map( category => 
+                            {categories.map(category =>
                                 <div className={selectedCategory === category.value ? "categoryButton selected" : "categoryButton"} key={category.catId} onClick={() => this.handleCategoryChange(category.value)}>
-                                {category.displayName}
+                                    {category.displayName}
                                 </div>
                             )}
-                        </div> 
+                        </div>
                     </div>
                     <div className="productSearch">
                         Search prices on {selectedCategory} products.
-                        <input type="text" name="searchString" placeholder="Search a product" onChange={this.handleSearchStringChange}/>
+                        <input type="text" name="searchString" placeholder="Search a product" onChange={this.handleSearchStringChange} minLength="1" required />
                     </div>
-                    <input type="submit" value="Check for products!"/>
+                    <input type="submit" value="Check for products!" />
                 </form>
-                <PriceCheckQueryResponses 
+                <PriceCheckQueryResponses
                     fetching={fetching}
                     searchComplete={searchComplete}
                     numOfSuppliers={numOfSuppliers}
                     searchResults={searchResults}
-                    count={count} />
+                    count={count}
+                    requestError={requestError} />
             </div>
         )
     }
