@@ -22,11 +22,6 @@ class PriceCheckForm extends Component {
         }
     }
 
-    getListOfSupplierIds = async (postcode) => {
-        const response = await axios.get(`https://www.foodbomb.com.au/supplier-service/postcode/${postcode}/suppliers`)
-        return response.data;
-    }
-
     getProductsFromCategoryForSearchQuery = async (supplierIds, category, searchString) => {
         const payload = {
             category: category,
@@ -58,12 +53,10 @@ class PriceCheckForm extends Component {
                     const searchResults = results.map(product => ({ name: product.pname, portion: `${product.size}${product.sizeUnit}`, productId: product.product_id, price: `$${product.price}` }))
                     this.setState({ searchResults, count: response.count }, () => this.setState({fetching: false, searchComplete: true, postcodeSubmitted: postcode}));
                 }).catch(err => {
-                    debugger
                     this.setState({fetching: false, searchComplete: false, requestError: JSON.stringify(err)})
                     console.error(err)
                 })
             }).catch(err => { 
-                debugger
                 console.error(err) 
                 this.setState({fetching: false, searchComplete: false, requestError: JSON.stringify(err)})
             })
