@@ -35,7 +35,6 @@ class PriceCheckForm extends Component {
             products = response.data;
         } catch (e) {
             console.error(e)
-            debugger
         }
         return products;
     }
