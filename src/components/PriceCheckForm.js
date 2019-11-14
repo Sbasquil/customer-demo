@@ -44,21 +44,26 @@ class PriceCheckForm extends Component {
         const { postcode, selectedCategory, searchString } = this.state;
         this.setState({ fetching: true, searchComplete: false }, () => console.log(this.state));
 
-        axios.get(`/supplier-service/postcode/${postcode}/suppliers`)
-            .then(response => {
-                this.setState({ numOfSuppliers: response.data.length })
-                this.getProductsFromCategoryForSearchQuery(response.data, selectedCategory, searchString).then(response => {
-                    const results = response.result;
-                    const searchResults = results.map(product => ({ name: product.pname, portion: `${product.size}${product.sizeUnit}`, productId: product.product_id, price: `$${product.price}` }))
-                    this.setState({ searchResults, count: response.count }, () => this.setState({fetching: false, searchComplete: true, postcodeSubmitted: postcode}));
-                }).catch(err => {
-                    this.setState({fetching: false, searchComplete: false, requestError: JSON.stringify(err)})
-                    console.error(err)
-                })
-            }).catch(err => { 
-                console.error(err) 
-                this.setState({fetching: false, searchComplete: false, requestError: JSON.stringify(err)})
-            })
+        axios.get(`http://localhost:3001/searchProducts/${postcode}/${selectedCategory}/${searchString}`)
+            .then( response => console.log(response))
+            .catch( error => console.log(error))
+
+
+        // axios.get(`/supplier-service/postcode/${postcode}/suppliers`)
+        //     .then(response => {
+        //         this.setState({ numOfSuppliers: response.data.length })
+        //         this.getProductsFromCategoryForSearchQuery(response.data, selectedCategory, searchString).then(response => {
+        //             const results = response.result;
+        //             const searchResults = results.map(product => ({ name: product.pname, portion: `${product.size}${product.sizeUnit}`, productId: product.product_id, price: `$${product.price}` }))
+        //             this.setState({ searchResults, count: response.count }, () => this.setState({fetching: false, searchComplete: true, postcodeSubmitted: postcode}));
+        //         }).catch(err => {
+        //             this.setState({fetching: false, searchComplete: false, requestError: JSON.stringify(err)})
+        //             console.error(err)
+        //         })
+        //     }).catch(err => { 
+        //         console.error(err) 
+        //         this.setState({fetching: false, searchComplete: false, requestError: JSON.stringify(err)})
+        //     })
     };
 
 
