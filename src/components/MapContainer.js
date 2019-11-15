@@ -4,18 +4,16 @@ import MapComponent from './MapComponent'
 
 const MapContainer = ({postcode}) => {
     const geocode = postcodeList.find(elem => elem.postcode.toString() === postcode.toString())
-    console.log(geocode)
-    if (postcode) {
+    if (geocode) {
+        console.log(geocode)
         return (
             <div className="MapContainer">
+                Your looking at results that deliver to {geocode.suburb}
                 <MapComponent 
                     isMarkerShown 
-                    lat={Number(geocode.lat)}
-                    lng={Number(geocode.lng)}
-                    googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGVx5Eq9cuCQsh3g8luYfpuki7_nNtCuw&callback=initMap"
-                    loadingElement={<div style={{ height: `100%` }} />}
-                    containerElement={<div style={{ height: `400px` }} />}
-                    mapElement={<div style={{ height: `100%` }} />}/>
+                    lat={parseFloat(geocode.lat)}
+                    lng={parseFloat(geocode.lon)}
+                />
             </div>
         )
     } else {
@@ -25,7 +23,3 @@ const MapContainer = ({postcode}) => {
 }
 
 export default MapContainer 
-
-// export default GoogleApiWrapper({
-//     apiKey: 'AIzaSyDGVx5Eq9cuCQsh3g8luYfpuki7_nNtCuw'
-//   })(MapContainer);
