@@ -45,9 +45,19 @@ class PriceCheckForm extends Component {
         this.setState({ fetching: true, searchComplete: false }, () => console.log(this.state));
 
         axios.get(`http://localhost:3001/searchProducts/${postcode}/${selectedCategory}/${searchString}`)
-            .then( response => console.log(response))
-            .catch( error => console.log(error))
-
+            .then( response => {
+                const searchResults = response.data.shortlist.result.map(product => ({ name: product.pname, portion: `${product.size}${product.sizeUnit}`, productId: product.product_id, price: `$${product.price}`}))
+                this.setState(
+                {
+                    searchResults,
+                    numOfSuppliers: response.data.supplierIds.length,
+                    count: response.data.shortlist.count
+                }, () => this.setState({fetching: false, searchComplete: true, postcodeSubmitted: postcode}))
+            })
+            .catch( error => {
+                console.error(error) 
+                this.setState({fetching: false, searchComplete: false, requestError: JSON.stringify(error)})
+            })
 
         // axios.get(`/supplier-service/postcode/${postcode}/suppliers`)
         //     .then(response => {
